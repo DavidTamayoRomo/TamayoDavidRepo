@@ -1,10 +1,15 @@
-import { Body, Controller, Get, OnModuleInit, Post } from '@nestjs/common';
+import { Body, Controller, Get, OnModuleInit, Param, Post } from '@nestjs/common';
 import { Client, ClientKafka, EventPattern } from '@nestjs/microservices';
 import { microserviceConfig } from 'src/microServiceConfig';
 import { TicketsService } from './tickets.service';
 import { RepositoryStateEnum, RepositoryStateFakeEnum, RepositoryStateValueEnum } from 'src/constants/RepositoryEnums';
 import { CreateTicketInput } from './dto/inputs/create-ticket.input';
+import { Ticket } from './entities/ticket.entity';
+import { SearchArgs } from '../common/dto/args/search.args';
+import { PaginationArgs } from '../common/dto/args/pagination.args';
+import { ApiResponse, ApiTags } from '@nestjs/swagger';
 
+@ApiTags('Tickets')
 @Controller('tickets')
 export class TicketsController implements OnModuleInit {
 
@@ -34,9 +39,33 @@ export class TicketsController implements OnModuleInit {
 
 
     @Post()
-    create(@Body() createTicketInput: CreateTicketInput) {
-        return this.ticketsService.create(createTicketInput);
+    @ApiResponse({status:201, description: 'Create Ticket', type: Ticket})
+    @ApiResponse({status:400, description: 'Bad request'})
+    @ApiResponse({status:500, description: 'Internal server error'})
+    async create(@Body() createTicketInput: CreateTicketInput): Promise<Ticket> {
+        return await this.ticketsService.create(createTicketInput);
+    }
+
+    @Get(':id')
+    @ApiResponse({status:200, description: 'Find Ticket', type: Ticket})
+    @ApiResponse({status:400, description: 'Bad request'})
+    @ApiResponse({status:500, description: 'Internal server error'})
+    async findOne(@Param('id') id: string): Promise<Ticket>{
+        return await this.ticketsService.findOne(id);
+    }
+
+    @Get('search')
+    @ApiResponse({status:200, description: 'Search Tickets', type: [Ticket]})
+    @ApiResponse({status:400, description: 'Bad request'})
+    @ApiResponse({status:500, description: 'Internal server error'})
+    async searchTickets(@Body() search: Search): Promise<Ticket[]>{
+        return this.ticketsService.searchTickets(search.paginationArgs, search.searchArgs);
     }
 
 
+}
+
+interface Search {
+    searchArgs: SearchArgs,
+    paginationArgs: PaginationArgs
 }

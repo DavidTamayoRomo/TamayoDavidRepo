@@ -27,7 +27,6 @@ export class TicketsService {
   }
 
   async create(createTicketInput: CreateTicketInput): Promise<Ticket> {
-
     // paso 1: Guardar el ticket con estado pending
     let state: string = createTicketInput.status;
     createTicketInput.status = RepositoryStateValueEnum[RepositoryStateEnum.pending];
