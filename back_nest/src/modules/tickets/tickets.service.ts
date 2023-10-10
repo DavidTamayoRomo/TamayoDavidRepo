@@ -7,15 +7,27 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { PaginationArgs } from '../common/dto/args/pagination.args';
 import { SearchArgs } from '../common/dto/args/search.args';
 import { StateService } from 'src/services/state/state.service';
-import { Client, ClientKafka } from '@nestjs/microservices';
-import { microserviceConfig } from 'src/microServiceConfig';
+import { Client, ClientKafka, Transport } from '@nestjs/microservices';
+//import { microserviceConfig } from '../../microServiceConfig';
 import { RepositoryStateEnum, RepositoryStateFakeEnum, RepositoryStateValueEnum } from 'src/constants/RepositoryEnums';
 import { CustomExceptionFilter } from 'src/middleware/custom-exception-filter';
 
 @Injectable()
 export class TicketsService {
 
-  @Client(microserviceConfig)
+  @Client({
+    transport: Transport.KAFKA,
+
+    options: {
+        client: {
+            brokers: [`${process.env.KAFKA_BROKER}:9091`],
+        },
+        consumer: {
+            groupId: '1',
+            allowAutoTopicCreation: true,
+        },
+    }
+})
   client: ClientKafka;
 
   constructor(

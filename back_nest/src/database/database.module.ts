@@ -18,6 +18,7 @@ import { Ticket } from 'src/modules/tickets/entities/ticket.entity';
           dropSchema: false,
           entities: [Ticket],
           migrations: ['./migrations/*{.ts,.js}'],
+          logging: true,
         };
       },
     }),

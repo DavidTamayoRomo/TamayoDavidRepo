@@ -7,9 +7,11 @@
 FROM node:16 AS builder
 # Set working directory
 WORKDIR /app
-# Copy all files from current directory to working dir in image
-COPY ./front_angular/ /app/
+# Copy all files from current directory to working dir in image# Copia los archivos de configuración y de código fuente
+COPY package.json package-lock.json ./
+COPY . .
 # install node modules and build assets
+RUN yarn install
 RUN yarn build
 
 # nginx state for serving content

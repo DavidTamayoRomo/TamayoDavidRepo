@@ -1,6 +1,6 @@
 import { Body, Controller, Get, OnModuleInit, Param, Post } from '@nestjs/common';
-import { Client, ClientKafka, EventPattern } from '@nestjs/microservices';
-import { microserviceConfig } from 'src/microServiceConfig';
+import { Client, ClientKafka, EventPattern, Transport } from '@nestjs/microservices';
+//import { microserviceConfig } from '../../microServiceConfig';
 import { TicketsService } from './tickets.service';
 import { RepositoryStateEnum, RepositoryStateFakeEnum, RepositoryStateValueEnum } from 'src/constants/RepositoryEnums';
 import { CreateTicketInput } from './dto/inputs/create-ticket.input';
@@ -13,7 +13,19 @@ import { ApiResponse, ApiTags } from '@nestjs/swagger';
 @Controller('tickets')
 export class TicketsController implements OnModuleInit {
 
-    @Client(microserviceConfig)
+    @Client({
+        transport: Transport.KAFKA,
+    
+        options: {
+            client: {
+                brokers: [`${process.env.KAFKA_BROKER}:9091`],
+            },
+            consumer: {
+                groupId: '1',
+                allowAutoTopicCreation: true,
+            },
+        }
+    })
     client: ClientKafka;
 
     constructor(

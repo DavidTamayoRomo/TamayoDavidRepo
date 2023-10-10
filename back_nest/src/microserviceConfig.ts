@@ -5,7 +5,7 @@ export const microserviceConfig: KafkaOptions = {
 
     options: {
         client: {
-            brokers: ["localhost:9091"],
+            brokers: [`${process.env.KAFKA_BROKER}:9091`],
         },
         consumer: {
             groupId: '1',

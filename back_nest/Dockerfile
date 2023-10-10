@@ -3,8 +3,7 @@ FROM node:18-alpine3.15 AS deps
 # Check https://github.com/nodejs/docker-node/tree/b4117f9333da4138b03a546ec926ef50a31506c3#nodealpine to understand why libc6-compat might be needed.
 RUN apk add --no-cache libc6-compat
 WORKDIR /app
-COPY ./back_nest/ /app/
-#COPY ./back_nest/package.json ./back_nest/yarn.lock ./
+COPY package.json yarn.lock ./
 RUN yarn install --frozen-lockfile
 
 # Build the app with cache dependencies
@@ -21,8 +20,10 @@ FROM node:18-alpine3.15 AS runner
 # Set working directory
 WORKDIR /usr/src/app
 
-COPY ./back_nest/package.json ./back_nest/yarn.lock ./
 
+COPY package.json yarn.lock ./
+#COPY .env ./
+COPY ./.env ./.env
 RUN yarn install --prod
 
 COPY --from=builder /app/dist ./dist
@@ -31,7 +32,7 @@ COPY --from=builder /app/dist ./dist
 # RUN mkdir -p ./pokedex
 
 # COPY --from=builder ./app/dist/ ./app
-# COPY ./.env ./app/.env
+
 
 # # Dar permiso para ejecutar la applicación
 # RUN adduser --disabled-password pokeuser

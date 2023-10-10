@@ -1,12 +1,25 @@
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { ValidationPipe } from '@nestjs/common';
-import { microserviceConfig } from './microServiceConfig';
+//import { microserviceConfig } from './microServiceConfig';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
+import { Transport } from '@nestjs/microservices';
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
 
-  app.connectMicroservice(microserviceConfig);
+  app.connectMicroservice({
+    transport: Transport.KAFKA,
+
+    options: {
+        client: {
+            brokers: [`${process.env.KAFKA_BROKER}:9091`],
+        },
+        consumer: {
+            groupId: '1',
+            allowAutoTopicCreation: true,
+        },
+    }
+});
   
   app.enableCors();
   app.useGlobalPipes(
