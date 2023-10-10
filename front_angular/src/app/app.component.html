@@ -1,11 +1,17 @@
 <div class="card">
+
     <p-toast></p-toast>
     <p-toolbar styleClass="mb-4 gap-2">
         <ng-template pTemplate="left">
             <button pButton pRipple label="New" icon="pi pi-plus" class="p-button-success mr-2"
                 (click)="openNew()"></button>
-            <button pButton pRipple label="Delete" icon="pi pi-trash" class="p-button-danger"
-                (click)="deleteSelectedProducts()" [disabled]="!selectedProducts || !selectedProducts.length"></button>
+            <!-- <button pButton pRipple label="Delete" icon="pi pi-trash" class="p-button-danger"
+                (click)="deleteSelectedProducts()" [disabled]="!selectedProducts || !selectedProducts.length"></button> -->
+            <div class="card flex justify-content-center">
+                <p-treeSelect class="w-full md:w-20rem" containerStyleClass="w-full" [(ngModel)]="selectedNodes"
+                    [options]="nodes" display="chip" [metaKeySelection]="false" selectionMode="checkbox"
+                    placeholder="Select Item" (ngModelChange)="informacion($event)"></p-treeSelect>
+            </div>
         </ng-template>
     </p-toolbar>
 
@@ -101,10 +107,10 @@
                     <p-tag [value]="product.status" [severity]="getSeverity(product.status)"></p-tag>
                 </td>
                 <td>
-                    <button pButton pRipple icon="pi pi-pencil" class="p-button-rounded p-button-success mr-2"
+                    <!-- <button pButton pRipple icon="pi pi-pencil" class="p-button-rounded p-button-success mr-2"
                         (click)="editProduct(product)"></button>
                     <button pButton pRipple icon="pi pi-trash" class="p-button-rounded p-button-warning"
-                        (click)="deleteProduct(product)"></button>
+                        (click)="deleteProduct(product)"></button> -->
                 </td>
             </tr>
         </ng-template>
@@ -112,10 +118,11 @@
             <div class="flex align-items-center justify-content-between">Hay un total de {{ products ?
                 total : 0 }} tickets.</div>
         </ng-template>
-        
+
     </p-table>
-    <p-paginator (onPageChange)="onPageChange($event)" [first]="first" [rows]="rows" [totalRecords]="total"></p-paginator>
-   
+    <p-paginator (onPageChange)="onPageChange($event)" [first]="first" [rows]="rows"
+        [totalRecords]="total"></p-paginator>
+
 </div>
 
 
@@ -137,8 +144,7 @@
 
             <div class="field">
                 <label for="inventoryStatus">Prioridad</label>
-                <p-dropdown inputId="inventoryStatus" [options]="priority" formControlName="prioridad"
-                    >
+                <p-dropdown inputId="inventoryStatus" [options]="priority" formControlName="prioridad">
                     <ng-template pTemplate="selectedItem">
                         <p-tag [value]="registerForm.get('prioridad')?.value!"
                             [severity]="getPriority(registerForm.get('prioridad')?.value!)"></p-tag>
@@ -153,8 +159,7 @@
 
             <div class="field">
                 <label for="inventoryStatus">Categoría</label>
-                <p-dropdown inputId="inventoryStatus" [options]="category" formControlName="categoria"
-                    >
+                <p-dropdown inputId="inventoryStatus" [options]="category" formControlName="categoria">
                     <ng-template pTemplate="selectedItem">
                         <p-tag [value]="registerForm.get('categoria')?.value!"
                             [severity]="getCategory(registerForm.get('categoria')?.value!)"></p-tag>
@@ -169,8 +174,7 @@
 
             <div class="field">
                 <label for="inventoryStatus">Estado</label>
-                <p-dropdown inputId="inventoryStatus" [options]="statuses" formControlName="estado"
-                    >
+                <p-dropdown inputId="inventoryStatus" [options]="statuses" formControlName="estado">
                     <ng-template pTemplate="selectedItem">
                         <p-tag [value]="registerForm.get('estado')?.value!"
                             [severity]="getSeverity(registerForm.get('estado')?.value!)"></p-tag>

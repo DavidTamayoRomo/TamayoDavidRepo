@@ -19,6 +19,11 @@ import { Table } from 'primeng/table';
 
 
 export class AppComponent implements OnInit {
+
+  nodes!: any[];
+
+  selectedNodes: any;
+
   productDialog: boolean = false;
 
   products!: Ticket[];
@@ -57,12 +62,11 @@ export class AppComponent implements OnInit {
 
   constructor(
     private fb: FormBuilder,
-    private productService: ProductService,
     private messageService: MessageService,
-    private confirmationService: ConfirmationService,
     private appService: AppService
-  ) { }
-
+  ) { 
+    this.appService.getFiles().then((files) => (this.nodes = files));
+  }
   ngOnInit() {
     this.obtenerTickets();
     this.statuses = [
@@ -82,9 +86,9 @@ export class AppComponent implements OnInit {
     ];
   }
 
-
- 
-
+  informacion(event:any){
+    console.log('TREE',event);
+  }
   obtenerTickets() {
     console.log('PAGINADO ', this.paginar);
     this.appService.getTickets(this.paginar).subscribe((resp: any) => {
@@ -96,41 +100,13 @@ export class AppComponent implements OnInit {
   }
 
   openNew() {
-    //this.product = {};
     this.submitted = false;
     this.productDialog = true;
   }
 
-  deleteSelectedProducts() {
-    this.confirmationService.confirm({
-      message: 'Are you sure you want to delete the selected products?',
-      header: 'Confirm',
-      icon: 'pi pi-exclamation-triangle',
-      accept: () => {
-        this.products = this.products.filter((val) => !this.selectedProducts?.includes(val));
-        this.selectedProducts = null;
-        this.messageService.add({ severity: 'success', summary: 'Successful', detail: 'Products Deleted', life: 3000 });
-      }
-    });
-  }
 
-  editProduct(product: Ticket) {
-    this.product = { ...product };
-    this.productDialog = true;
-  }
 
-  deleteProduct(product: Ticket) {
-    /* this.confirmationService.confirm({
-      message: 'Are you sure you want to delete ' + product.name + '?',
-      header: 'Confirm',
-      icon: 'pi pi-exclamation-triangle',
-      accept: () => {
-        this.products = this.products.filter((val) => val.id !== product.id);
-        this.product = {};
-        this.messageService.add({ severity: 'success', summary: 'Successful', detail: 'Product Deleted', life: 3000 });
-      }
-    }); */
-  }
+  
 
   hideDialog() {
     this.productDialog = false;
@@ -168,9 +144,6 @@ export class AppComponent implements OnInit {
       this.messageService.add({ severity: 'success', summary: 'Successful', detail: 'Product Created', life: 3000 });
     }
   }
-
-
-
 
   getSeverity(status: string): any {
     switch (status) {
