@@ -67,7 +67,7 @@ export class FilesService {
           
             for (const row of batch) {
               if (idSet.has(row.id)) {
-                errors.push({ row, error: 'Duplicated record' });
+                errors.push({ row, error: {details:[{message:'Duplicate record'}]} });
                 continue;
               }
               idSet.add(row.id);
