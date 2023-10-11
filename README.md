@@ -21,3 +21,20 @@ KAFKA_ADVERTISED_LISTENERS: LISTENER_DOCKER_INTERNAL://kafka1:19091,LISTENER_DOC
 ```
 docker-compose up -d --build
 ```
+
+
+## Documentacion EndPoind
+```
+http://localhost:3000/docs
+```
+
+## GRAPHQL
+```
+http://localhost:3000/graphql
+```
+
+## KAFKA
+```
+http://localhost:9000/
+```
+
