@@ -12,7 +12,7 @@ import { FileService } from 'src/service/fileservice';
   selector: 'app-root',
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.css'],
-  providers: [MessageService, ConfirmationService]
+  providers: [MessageService, ConfirmationService, FileService]
 })
 
 
@@ -300,7 +300,9 @@ export class AppComponent implements OnInit {
         this.uploadedFiles=file;
     }
     console.log(this.uploadedFiles);
-    
+    this.fileService.uploadFile(this.uploadedFiles).subscribe(resp=>{
+      console.log(resp);
+    })
     this.messageService.add({severity: 'info', summary: 'File Uploaded', detail: ''});
 }
 

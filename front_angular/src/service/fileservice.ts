@@ -7,9 +7,9 @@ export class FileService {
         private http: HttpClient,
     ) { }
 
-    uploadFile(file: File) {
+    uploadFile(file: any) {
         const formData = new FormData();
         formData.append('file', file, file.name);
-        return this.http.post('localhost:3000/files', formData)
+        return this.http.post('http://localhost:3000/files', formData)
     }
 };
