@@ -1,1 +1,217 @@
-<p>ticket works!</p>
+<div class="card">
+
+    <p-toast></p-toast>
+    <p-toolbar styleClass="mb-4 gap-2">
+        <ng-template pTemplate="left">
+            <button pButton pRipple label="Crear Ticket" icon="pi pi-plus" class="p-button-success mr-2"
+                (click)="openNew()"></button>
+            <button pButton pRipple label="file" icon="pi pi-plus" class="p-button-success mr-2"
+                (click)="openFile()"></button>
+
+        </ng-template>
+        <ng-template pTemplate="right">
+            <div class="card flex justify-content-center">
+                <p-treeSelect class="w-full md:w-20rem" containerStyleClass="w-full" [(ngModel)]="selectedNodes"
+                    [options]="nodes" display="chip" [metaKeySelection]="false" selectionMode="checkbox"
+                    placeholder="Filtrar" (ngModelChange)="informacion($event)"></p-treeSelect>
+
+                <p-calendar [(ngModel)]="rangeDates" (ngModelChange)="datosCalendario($event)" selectionMode="range"
+                    [readonlyInput]="true" [showIcon]="true"></p-calendar>
+                <button pButton pRipple icon="pi pi-filter-slash" class="p-button-secondary mr-2"
+                    (click)="clear()"></button>
+
+            </div>
+        </ng-template>
+    </p-toolbar>
+
+    <p-table #dt [value]="products" [rows]="10" [paginator]="false" (onPage)="onPage($event)"
+        [globalFilterFields]="['name', 'country.name', 'representative.name', 'status']"
+        [tableStyle]="{ 'min-width': '75rem' }" [(selection)]="selectedProducts" [rowHover]="true" dataKey="id"
+        currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries" [showCurrentPageReport]="true">
+
+        <ng-template pTemplate="header">
+            <tr>
+                
+                <th pSortableColumn="name" style="min-width:15rem">Titulo </th>
+                <th pSortableColumn="name" style="min-width:15rem">Descripción
+                </th>
+                <th pSortableColumn="category" style="min-width:10rem">Categoría </th>
+                <th pSortableColumn="inventoryStatus" style="min-width:10rem">Prioridad </th>
+                <th pSortableColumn="inventoryStatus" style="min-width:10rem">Estado </th>
+                <th></th>
+            </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-product>
+            <tr>
+                
+                <td>{{ product.title }}</td>
+                <td>{{ product.description }}</td>
+                <td>
+                    <p-tag [value]="product.category" [severity]="getCategory(product.category)"></p-tag>
+                </td>
+                <td>
+                    <p-tag [value]="product.priority" [severity]="getPriority(product.priority)"></p-tag>
+                </td>
+                <td>
+                    <p-tag [value]="product.status" [severity]="getSeverity(product.status)"></p-tag>
+                </td>
+                <td>
+                    <button pButton pRipple icon="pi pi-upload" class="p-button-rounded p-button-warning"
+                        (click)="openFile()"></button>
+                </td>
+            </tr>
+        </ng-template>
+        <ng-template pTemplate="summary">
+            <div class="flex align-items-center justify-content-between">Hay un total de {{ products ?
+                total : 0 }} tickets.</div>
+        </ng-template>
+
+    </p-table>
+    <p-paginator *ngIf="bandera" (onPageChange)="onPageChange($event)" [first]="first" [rows]="rows"
+        [totalRecords]="total"></p-paginator>
+
+</div>
+
+
+<p-dialog [(visible)]="productDialog" [style]="{ width: '450px', height: '600px'}" header="Crear Tickets" [modal]="true"
+    styleClass="p-fluid">
+    <ng-template pTemplate="content">
+        <form [formGroup]="registerForm">
+            <div class="field">
+                <label for="name">Titulo</label>
+                <input type="text" pInputText required autofocus formControlName="titlulo" />
+                <small class="p-error" *ngIf="campoNoValido('titlulo')">El título es requerido.</small>
+            </div>
+            <div class="field">
+                <label for="description">Descripción</label>
+                <textarea id="description" pInputTextarea required rows="3" cols="20"
+                    formControlName="descripcion"></textarea>
+                <small class="p-error" *ngIf="campoNoValido('descripcion')">La descripción es requerida.</small>
+            </div>
+
+            <div class="field">
+                <label for="inventoryStatus">Prioridad</label>
+                <p-dropdown inputId="inventoryStatus" [options]="priority" formControlName="prioridad">
+                    <ng-template pTemplate="selectedItem">
+                        <p-tag [value]="registerForm.get('prioridad')?.value!"
+                            [severity]="getPriority(registerForm.get('prioridad')?.value!)"></p-tag>
+                    </ng-template>
+                    <ng-template let-option pTemplate="item">
+                        <p-tag [value]="option.label" [severity]="getPriority(option.value)"></p-tag>
+                    </ng-template>
+
+                </p-dropdown>
+                <small class="p-error" *ngIf="campoNoValido('prioridad')">La descripción es requerida.</small>
+            </div>
+
+            <div class="field">
+                <label for="inventoryStatus">Categoría</label>
+                <p-dropdown inputId="inventoryStatus" [options]="category" formControlName="categoria">
+                    <ng-template pTemplate="selectedItem">
+                        <p-tag [value]="registerForm.get('categoria')?.value!"
+                            [severity]="getCategory(registerForm.get('categoria')?.value!)"></p-tag>
+                    </ng-template>
+                    <ng-template let-option pTemplate="item">
+                        <p-tag [value]="option.label" [severity]="getCategory(option.value)"></p-tag>
+                    </ng-template>
+
+                </p-dropdown>
+                <small class="p-error" *ngIf="campoNoValido('categoria')">La descripción es requerida.</small>
+            </div>
+
+            <div class="field">
+                <label for="inventoryStatus">Estado</label>
+                <p-dropdown inputId="inventoryStatus" [options]="statuses" formControlName="estado">
+                    <ng-template pTemplate="selectedItem">
+                        <p-tag [value]="registerForm.get('estado')?.value!"
+                            [severity]="getSeverity(registerForm.get('estado')?.value!)"></p-tag>
+                    </ng-template>
+                    <ng-template let-option pTemplate="item">
+                        <p-tag [value]="option.label" [severity]="getSeverity(option.value)"></p-tag>
+                    </ng-template>
+                </p-dropdown>
+                <small class="p-error" *ngIf="campoNoValido('estado')">La descripción es requerida.</small>
+            </div>
+
+        </form>
+
+    </ng-template>
+
+    <ng-template pTemplate="footer">
+        <button pButton pRipple label="Cancel" icon="pi pi-times" class="p-button-text" (click)="hideDialog()"></button>
+        <button pButton pRipple label="Save" icon="pi pi-check" class="p-button-text" (click)="saveProduct()"></button>
+    </ng-template>
+</p-dialog>
+
+<p-confirmDialog [style]="{ width: '450px' }"></p-confirmDialog>
+
+<p-dialog [(visible)]="productDialog1" [style]="{ width: '450px', height: '600px'}" header="Cargar archivo"
+    [modal]="true" styleClass="p-fluid">
+    <ng-template pTemplate="content">
+
+        <p-fileUpload name="demo[]" url="https://www.primefaces.org/cdn/api/upload.php" (onUpload)="onUpload($event)"
+            [multiple]="false" accept=".csv,text/csv">
+            <ng-template pTemplate="content">
+                <ul *ngIf="uploadedFiles.length">
+                    <li *ngFor="let file of uploadedFiles">{{ file.name }} - {{ file.size }} bytes</li>
+                </ul>
+            </ng-template>
+        </p-fileUpload>
+
+
+        <p-table #dt [value]="datosUpload?.validRecords" [paginator]="false" (onPage)="onPage($event)"
+            [tableStyle]="{ 'min-width': '10rem' }" [(selection)]="selectedProducts" [rowHover]="true" dataKey="id"
+            currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
+            [showCurrentPageReport]="true">
+
+            <ng-template pTemplate="header">
+                <tr>
+                    <th pSortableColumn="name">ID</th>
+                    <th pSortableColumn="name">Balance</th>
+                    <th pSortableColumn="name">Cuenta</th>
+                    <th pSortableColumn="name">Descripción</th>
+
+                </tr>
+
+            </ng-template>
+            <ng-template pTemplate="body" let-dato>
+                <tr>
+                    <td><i class="pi pi-check" style="color: #009218"></i> {{ dato.id }}</td>
+                    <td>{{ dato.balance }}</td>
+                    <td>{{ dato.account }}</td>
+                    <td>{{ dato.description }}</td>
+
+                </tr>
+            </ng-template>
+
+        </p-table>
+        <p-table #dt [value]="datosUpload?.errors" [paginator]="false" (onPage)="onPage($event)"
+            [tableStyle]="{ 'min-width': '10rem' }" [(selection)]="selectedProducts" [rowHover]="true" dataKey="id"
+            currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
+            [showCurrentPageReport]="true">
+
+            <ng-template pTemplate="header">
+                <tr>
+                    <th pSortableColumn="name">ID</th>
+                    <th pSortableColumn="name">Descripción
+
+                </tr>
+
+            </ng-template>
+            <ng-template pTemplate="body" let-dato>
+                <tr>
+                    <td>{{ dato.id }}</td>
+                    <td><i class="pi pi-ban" style="color: #db1313"></i> {{ dato.error.details[0].message }}</td>
+
+                </tr>
+            </ng-template>
+
+        </p-table>
+    </ng-template>
+
+    <ng-template pTemplate="footer">
+        <button pButton pRipple label="Cancel" icon="pi pi-times" class="p-button-text"
+            (click)="hideDialog1()"></button>
+        
+    </ng-template>
+</p-dialog>
