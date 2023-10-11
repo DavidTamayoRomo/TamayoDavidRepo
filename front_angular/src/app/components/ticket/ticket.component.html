@@ -159,7 +159,7 @@
         </p-fileUpload>
 
 
-        <p-table #dt [value]="datosUpload?.validRecords" [paginator]="false" (onPage)="onPage($event)"
+        <p-table *ngIf="datosUpload?.validRecords?.length>0" #dt [value]="datosUpload?.validRecords" [paginator]="false" (onPage)="onPage($event)"
             [tableStyle]="{ 'min-width': '10rem' }" [(selection)]="selectedProducts" [rowHover]="true" dataKey="id"
             currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
             [showCurrentPageReport]="true">
@@ -185,7 +185,7 @@
             </ng-template>
 
         </p-table>
-        <p-table #dt [value]="datosUpload?.errors" [paginator]="false" (onPage)="onPage($event)"
+        <p-table *ngIf="datosUpload?.errors?.length>0" #dt [value]="datosUpload?.errors" [paginator]="false" (onPage)="onPage($event)"
             [tableStyle]="{ 'min-width': '10rem' }" [(selection)]="selectedProducts" [rowHover]="true" dataKey="id"
             currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
             [showCurrentPageReport]="true">
