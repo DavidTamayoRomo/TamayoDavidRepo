@@ -3,7 +3,7 @@ import { CreateFileDto } from './dto/create-file.dto';
 import { UpdateFileDto } from './dto/update-file.dto';
 import * as Papa from 'papaparse';
 import * as Joi from 'joi';
-import { AccountType, statusType } from 'src/constants/RepositoryEnums';
+import { AccountType, statusType } from '../../constants/RepositoryEnums';
 
 @Injectable()
 export class FilesService {

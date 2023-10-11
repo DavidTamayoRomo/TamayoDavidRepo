@@ -2,6 +2,8 @@ import { Injectable  } from '@nestjs/common';
 import { HttpService } from '@nestjs/axios';
 import { ConfigService } from '@nestjs/config';
 
+import { lastValueFrom } from 'rxjs';
+
 @Injectable()
 export class StateService {
     constructor(
@@ -13,8 +15,9 @@ export class StateService {
         return this.configService.get<string>('URL_API_FAKE','no existe')
     }
 
-    getStatusCodeById(id:number){
-        return this.httpService.get(`${this.getUrlStatus()}/serviceStatus/${id}`)
+    async getStatusCodeById(id:number){
+        const {data}= await lastValueFrom(this.httpService.get(`${this.getUrlStatus()}/serviceStatus/${id}`));
+        return data;    
     }
 
 }

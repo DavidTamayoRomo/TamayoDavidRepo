@@ -5,6 +5,7 @@ import { FormBuilder, Validators } from '@angular/forms';
 import { AppService } from './app.service';
 import { Paginar } from 'src/domain/pagination';
 import { Table } from 'primeng/table';
+import { FileService } from 'src/service/fileservice';
 
 
 @Component({
@@ -17,6 +18,8 @@ import { Table } from 'primeng/table';
 
 export class AppComponent implements OnInit {
 
+  uploadedFiles: any[] = [];
+
   rangeDates: Date[] | undefined;
 
   nodes!: any[];
@@ -24,6 +27,7 @@ export class AppComponent implements OnInit {
   selectedNodes: any;
 
   productDialog: boolean = false;
+  productDialog1: boolean = false;
 
   products!: Ticket[];
 
@@ -67,6 +71,7 @@ export class AppComponent implements OnInit {
     private fb: FormBuilder,
     private messageService: MessageService,
     private appService: AppService,
+    private fileService:FileService
   ) {
     this.appService.getSearch().then((item) => (this.nodes = item));
   }
@@ -138,14 +143,29 @@ export class AppComponent implements OnInit {
     })
   }
 
+  loadFile(){
+
+  }
+
   openNew() {
     this.submitted = false;
     this.productDialog = true;
   }
 
+  openFile() {
+    this.productDialog1 = true;
+  }
+
   hideDialog() {
     this.productDialog = false;
     this.submitted = false;
+  }
+  hideDialog1() {
+    this.productDialog1 = false;
+  }
+
+  saveProduct1(){
+
   }
 
   saveProduct() {
@@ -274,6 +294,16 @@ export class AppComponent implements OnInit {
 
   }
 
+
+  onUpload(event:any) {
+    for(let file of event.files) {
+        this.uploadedFiles=file;
+    }
+    console.log(this.uploadedFiles);
+    
+    this.messageService.add({severity: 'info', summary: 'File Uploaded', detail: ''});
+}
+
 }
 
 interface PageEvent {
@@ -281,4 +311,9 @@ interface PageEvent {
   rows: number;
   page: number;
   pageCount: number;
+}
+
+interface UploadEvent {
+  originalEvent: Event;
+  files: File[];
 }

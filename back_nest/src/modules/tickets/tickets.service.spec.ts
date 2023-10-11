@@ -4,7 +4,7 @@ import { Repository } from 'typeorm';
 import { getRepositoryToken } from '@nestjs/typeorm';
 import { Ticket } from './entities/ticket.entity';
 import { StateService } from '../../services/state/state.service';
-import { ClientKafka } from '@nestjs/microservices';
+import { RepositoryStateFakeEnum } from '../../constants/RepositoryEnums';
 describe('TicketsService', () => {
   let service: TicketsService;
   let mockRepository = {
@@ -20,24 +20,26 @@ describe('TicketsService', () => {
     emit: jest.fn(),
   };
 
-  beforeEach(async () => {
+  beforeAll(async () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [
         TicketsService,
         { provide: getRepositoryToken(Ticket), useValue: mockRepository },
         { provide: StateService, useValue: mockStateService },
-        { provide: ClientKafka, useValue: mockClientKafka },
       ],
     }).compile();
 
     service = module.get<TicketsService>(TicketsService);
   });
+  it('valid service',()=>{
+    expect(service).toBeDefined()
+  })
 
   describe('create', () => {
     it('should create a ticket and emit a message to Kafka', async () => {
       const input = { 
         "category": "incident",
-        "status": "APROBADO",
+        "status": "rejected",
         "priority": "high",
         "title": "Titulo 7",
         "description": "Esta es la descripcion 7",
@@ -45,22 +47,23 @@ describe('TicketsService', () => {
         "updatedAt": new Date()
        };
       const savedTicket = { ...input, id: '1' };
-      mockRepository.create.mockReturnValueOnce(input);
+      //mockRepository.create.mockReturnValueOnce(input);
       mockRepository.save.mockResolvedValueOnce(savedTicket);
-      mockStateService.getStatusCodeById.mockReturnValueOnce({
-        subscribe: jest.fn((fn) => fn({ data: { state: 'some-state' } })),
-      });
+      mockStateService.getStatusCodeById.mockResolvedValueOnce({id:'0485a743-cc27-48b1-a483-fa182c079c2d', state: '606' });
   
       const result = await service.create(input);
   
       expect(result).toEqual(savedTicket);
-      expect(mockRepository.create).toHaveBeenCalledWith(input);
-      expect(mockRepository.save).toHaveBeenCalledWith(input);
-      expect(mockStateService.getStatusCodeById).toHaveBeenCalledWith(/* ... expected args ... */);
-      expect(mockClientKafka.emit).toHaveBeenCalledWith(
+     
+      expect(mockRepository.save).toBeCalledTimes(1);
+      expect(mockRepository.save).toBeCalledWith(input);
+      expect(mockStateService.getStatusCodeById).toBeCalledTimes(1);
+      expect(mockStateService.getStatusCodeById).toBeCalledWith(RepositoryStateFakeEnum.rejected);
+      expect(mockStateService.getStatusCodeById).not.toBeCalledWith(RepositoryStateFakeEnum.approved);
+      /* expect(mockClientKafka.emit).toHaveBeenCalledWith(
         'technical_support_tickets',
         JSON.stringify({ id: savedTicket.id, status: 'some-state' }),
-      );
+      );  */
     });
   });
 

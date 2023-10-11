@@ -6,11 +6,11 @@ import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import { PaginationArgs } from '../common/dto/args/pagination.args';
 import { SearchArgs } from '../common/dto/args/search.args';
-import { StateService } from 'src/services/state/state.service';
+import { StateService } from '../../services/state/state.service';
 import { Client, ClientKafka, Transport } from '@nestjs/microservices';
 //import { microserviceConfig } from '../../microServiceConfig';
-import { RepositoryStateEnum, RepositoryStateFakeEnum, RepositoryStateValueEnum } from 'src/constants/RepositoryEnums';
-import { CustomExceptionFilter } from 'src/middleware/custom-exception-filter';
+import { RepositoryStateEnum, RepositoryStateFakeEnum, RepositoryStateValueEnum } from '../../constants/RepositoryEnums';
+import { CustomExceptionFilter } from '../../middleware/custom-exception-filter';
 
 @Injectable()
 export class TicketsService {
@@ -20,7 +20,7 @@ export class TicketsService {
 
     options: {
         client: {
-            brokers: [`${process.env.KAFKA_BROKER}:9091`],
+            brokers: [`localhost:9091`],
         },
         consumer: {
             groupId: '1',
@@ -42,9 +42,9 @@ export class TicketsService {
     // paso 1: Guardar el ticket con estado pending
     let state: string = createTicketInput.status;
     createTicketInput.status = RepositoryStateValueEnum[RepositoryStateEnum.pending];
-    const newTicket = this.ticketRepository.create(createTicketInput);
+    //const newTicket = this.ticketRepository.create(createTicketInput);
     console.log("ESTADO QUE SE REQUIERE", state);
-    let ticket = await this.ticketRepository.save(newTicket);
+    let ticket = await this.ticketRepository.save(createTicketInput);
     //category incident o support | “1” verified o “2” approved
 
     const valorNumerico = Object.keys(RepositoryStateFakeEnum).find(
@@ -60,19 +60,17 @@ export class TicketsService {
       
     } */
 
-    this.stateService.getStatusCodeById(parseInt(valorNumerico)).subscribe((resp: any) => {
-      let dato = JSON.parse(JSON.stringify(resp.data));
-      console.log("response", dato);
-      console.log("response", dato.state);
-      // paso 2: Enviamos a kafka el id y estado que se debe poner
-      this.client.emit<string>('technical_support_tickets', JSON.stringify({ id: ticket.id, status: dato.state }));
-    })
+
+    const resp = await this.stateService.getStatusCodeById(parseInt(valorNumerico))
+    this.client.emit<string>('technical_support_tickets', JSON.stringify({ id: ticket.id, status: resp.state }));
+
     return ticket;
   }
 
   async findAll(paginationArgs: PaginationArgs): Promise<Ticket[]> {
     const { limit, offset } = paginationArgs;
     const queryBuilder = this.ticketRepository.createQueryBuilder()
+      .orderBy("created_at", "DESC")
       .take(limit)
       .skip(offset);
 
