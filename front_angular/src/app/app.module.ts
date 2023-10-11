@@ -93,9 +93,9 @@ import { AnimateModule } from 'primeng/animate';
 import { CardModule } from 'primeng/card';
 import { BlockUIModule } from 'primeng/blockui';
 import { ProgressSpinnerModule } from 'primeng/progressspinner';
-import { ProductService } from 'src/service/productservice';
 import { AppComponent } from './app.component';
-import { GraphQLModule } from './graphql.module';
+import { GraphQLModule } from './modules/graphql/graphql.module';
+import { TicketComponent } from './components/ticket/ticket.component';
 
 @NgModule({
   imports: [
@@ -194,8 +194,7 @@ import { GraphQLModule } from './graphql.module';
     RouterModule.forRoot([{ path: '', component: AppComponent }]),
     GraphQLModule
   ],
-  declarations: [AppComponent],
+  declarations: [AppComponent, TicketComponent],
   bootstrap: [AppComponent],
-  providers: [ProductService]
 })
 export class AppModule { }

@@ -1,5 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
+import { environment } from '../environments/environment';
 
 @Injectable()
 export class FileService {
@@ -10,6 +11,6 @@ export class FileService {
     uploadFile(file: any) {
         const formData = new FormData();
         formData.append('file', file, file.name);
-        return this.http.post('http://localhost:3000/files', formData)
+        return this.http.post(`${environment.back}/files`, formData)
     }
 };
