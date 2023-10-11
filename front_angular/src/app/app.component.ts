@@ -18,6 +18,7 @@ import { FileService } from 'src/service/fileservice';
 
 export class AppComponent implements OnInit {
 
+  datosUpload:any;
   uploadedFiles: any[] = [];
 
   rangeDates: Date[] | undefined;
@@ -300,8 +301,9 @@ export class AppComponent implements OnInit {
         this.uploadedFiles=file;
     }
     console.log(this.uploadedFiles);
-    this.fileService.uploadFile(this.uploadedFiles).subscribe(resp=>{
+    this.fileService.uploadFile(this.uploadedFiles).subscribe((resp:any)=>{
       console.log(resp);
+      this.datosUpload =resp;
     })
     this.messageService.add({severity: 'info', summary: 'File Uploaded', detail: ''});
 }

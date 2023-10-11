@@ -33,15 +33,12 @@
                 <!-- <th style="width: 4rem">
                     <p-tableHeaderCheckbox></p-tableHeaderCheckbox>
                 </th> -->
-                <th pSortableColumn="name" style="min-width:15rem">Titulo <p-sortIcon field="name"></p-sortIcon></th>
-                <th pSortableColumn="name" style="min-width:15rem">Descripción <p-sortIcon field="name"></p-sortIcon>
+                <th pSortableColumn="name" style="min-width:15rem">Titulo </th>
+                <th pSortableColumn="name" style="min-width:15rem">Descripción 
                 </th>
-                <th pSortableColumn="category" style="min-width:10rem">Categoría <p-sortIcon
-                        field="category"></p-sortIcon></th>
-                <th pSortableColumn="inventoryStatus" style="min-width:10rem">Prioridad <p-sortIcon
-                        field="inventoryStatus"></p-sortIcon></th>
-                <th pSortableColumn="inventoryStatus" style="min-width:10rem">Estado <p-sortIcon
-                        field="inventoryStatus"></p-sortIcon></th>
+                <th pSortableColumn="category" style="min-width:10rem">Categoría </th>
+                <th pSortableColumn="inventoryStatus" style="min-width:10rem">Prioridad </th>
+                <th pSortableColumn="inventoryStatus" style="min-width:10rem">Estado </th>
                 <th></th>
             </tr>
             <!-- <tr>
@@ -216,6 +213,28 @@
             </ng-template>
         </p-fileUpload>
 
+
+        <p-table #dt [value]="datosUpload?.validRecords" [paginator]="false" (onPage)="onPage($event)"
+        [tableStyle]="{ 'min-width': '10rem' }" [(selection)]="selectedProducts" [rowHover]="true" dataKey="id"
+        currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries" [showCurrentPageReport]="true">
+
+        <ng-template pTemplate="header">
+            <tr>
+                <th pSortableColumn="name">Titulo</th>
+                <th pSortableColumn="name">Descripción 
+                
+            </tr>
+            
+        </ng-template>
+        <ng-template pTemplate="body" let-dato>
+            <tr>
+                <td>{{ dato.account }}</td>
+                <td>{{ dato.balance }}</td>
+                
+            </tr>
+        </ng-template>
+
+    </p-table>
     </ng-template>
 
     <ng-template pTemplate="footer">
