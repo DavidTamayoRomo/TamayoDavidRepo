@@ -10,6 +10,7 @@ describe('TicketsService', () => {
   let service: TicketsService;
   let mockRepository = {
     save: jest.fn(),
+    findOne: jest.fn(),
   };
 
   let mockStateService = {
@@ -21,7 +22,6 @@ describe('TicketsService', () => {
   };
 
   let clientMock: { emit: () => void };
-
   beforeAll(async () => {
     clientMock = { emit: jest.fn() };
     const module: TestingModule = await Test.createTestingModule({
@@ -69,6 +69,17 @@ describe('TicketsService', () => {
         'technical_support_tickets',
         JSON.stringify({ id: '0485a743-cc27-48b1-a483-fa182c079c2d', status: RepositoryStateFakeEnum.rejected }),
       ); */
+    });
+  });
+
+  describe('findbyId', () => {
+    it('should return a ticket if it exists', async () => {
+      const mockTicket = new Ticket(); 
+      mockTicket.id = '0485a743-cc27-48b1-a483-fa182c079c2d'; 
+      mockRepository.findOne.mockResolvedValue(mockTicket);
+      const ticket = await service.findOne(mockTicket.id);
+      expect(ticket).toEqual(mockTicket);
+      expect(mockRepository.findOne).toBeCalledWith(mockTicket.id);
     });
   });
 

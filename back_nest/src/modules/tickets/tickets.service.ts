@@ -42,28 +42,13 @@ export class TicketsService {
     // paso 1: Guardar el ticket con estado pending
     let state: string = createTicketInput.status;
     createTicketInput.status = RepositoryStateValueEnum[RepositoryStateEnum.pending];
-    //const newTicket = this.ticketRepository.create(createTicketInput);
-    console.log("ESTADO QUE SE REQUIERE", state);
     let ticket = await this.ticketRepository.save(createTicketInput);
     //category incident o support | “1” verified o “2” approved
-
     const valorNumerico = Object.keys(RepositoryStateFakeEnum).find(
       (key) => RepositoryStateFakeEnum[key] === state
     );
-      console.log(valorNumerico);
-
-    /* if (createTicketInput.category == 'incident' || createTicketInput.category == 'support') {
-
-    }
-
-    if (createTicketInput.category == 'reject') {
-      
-    } */
-
-
-    const resp = await this.stateService.getStatusCodeById(parseInt(valorNumerico))
+    const resp = await this.stateService.getStatusCodeById(+valorNumerico)
     this.client.emit<string>('technical_support_tickets', JSON.stringify({ id: ticket.id, status: resp.state }));
-
     return ticket;
   }
 
@@ -73,12 +58,11 @@ export class TicketsService {
       .orderBy("created_at", "DESC")
       .take(limit)
       .skip(offset);
-
     return queryBuilder.getMany();
   }
 
-  async findOne(id: string): Promise<Ticket> {
-    const ticket = await this.ticketRepository.findOneBy({ id });
+  async findOne(id: any): Promise<Ticket> {
+    const ticket = await this.ticketRepository.findOne(id);
     if (!ticket) throw new NotFoundException(`Ticket with id ${id} not exist`)
     return ticket;
   }
