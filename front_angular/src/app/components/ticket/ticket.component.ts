@@ -2,6 +2,7 @@ import { Component, OnInit, ViewChild } from '@angular/core';
 import { Validators, FormBuilder } from '@angular/forms';
 import { ConfirmationService, MessageService } from 'primeng/api';
 import { Table } from 'primeng/table';
+import { CategoryPipe } from 'src/app/shared/pipes/category.pipe';
 import { Paginar } from 'src/domain/pagination';
 import { Ticket } from 'src/domain/ticket';
 import { FileService } from 'src/service/file.service';
@@ -216,6 +217,7 @@ export class TicketComponent implements OnInit {
 
 
   getCategory(status: string): any {
+    
     switch (status) {
       case 'incident':
         return 'success';

@@ -96,6 +96,9 @@ import { ProgressSpinnerModule } from 'primeng/progressspinner';
 import { AppComponent } from './app.component';
 import { GraphQLModule } from './modules/graphql/graphql.module';
 import { TicketComponent } from './components/ticket/ticket.component';
+import { CategoryPipe } from './shared/pipes/category.pipe';
+import { PriorityPipe } from './shared/pipes/priority.pipe';
+import { StatusPipe } from './shared/pipes/status.pipe';
 
 @NgModule({
   imports: [
@@ -194,7 +197,7 @@ import { TicketComponent } from './components/ticket/ticket.component';
     RouterModule.forRoot([{ path: '', component: AppComponent }]),
     GraphQLModule
   ],
-  declarations: [AppComponent, TicketComponent],
+  declarations: [AppComponent, TicketComponent, CategoryPipe, PriorityPipe, StatusPipe],
   bootstrap: [AppComponent],
 })
 export class AppModule { }

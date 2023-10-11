@@ -47,10 +47,10 @@
                 <td>{{ product.title }}</td>
                 <td>{{ product.description }}</td>
                 <td>
-                    <p-tag [value]="product.category" [severity]="getCategory(product.category)"></p-tag>
+                    <p-tag [value]="product.category |  category" [severity]="getCategory(product.category)"></p-tag>
                 </td>
                 <td>
-                    <p-tag [value]="product.priority" [severity]="getPriority(product.priority)"></p-tag>
+                    <p-tag [value]="product.priority |  priority" [severity]="getPriority(product.priority)"></p-tag>
                 </td>
                 <td>
                     <p-tag [value]="product.status" [severity]="getSeverity(product.status)"></p-tag>
