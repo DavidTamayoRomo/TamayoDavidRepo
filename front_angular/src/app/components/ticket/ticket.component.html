@@ -5,7 +5,7 @@
         <ng-template pTemplate="left">
             <button pButton pRipple label="Crear Ticket" icon="pi pi-plus" class="p-button-success mr-2"
                 (click)="openNew()"></button>
-            <button pButton pRipple label="file" icon="pi pi-plus" class="p-button-success mr-2"
+            <button pButton pRipple label="Subir Archivo" icon="pi pi-plus" class="p-button-success mr-2"
                 (click)="openFile()"></button>
 
         </ng-template>
@@ -38,7 +38,7 @@
                 <th pSortableColumn="category" style="min-width:10rem">Categoría </th>
                 <th pSortableColumn="inventoryStatus" style="min-width:10rem">Prioridad </th>
                 <th pSortableColumn="inventoryStatus" style="min-width:10rem">Estado </th>
-                <th></th>
+               <!--  <th></th> -->
             </tr>
         </ng-template>
         <ng-template pTemplate="body" let-product>
@@ -55,10 +55,10 @@
                 <td>
                     <p-tag [value]="product.status" [severity]="getSeverity(product.status)"></p-tag>
                 </td>
-                <td>
+                <!-- <td>
                     <button pButton pRipple icon="pi pi-upload" class="p-button-rounded p-button-warning"
                         (click)="openFile()"></button>
-                </td>
+                </td> -->
             </tr>
         </ng-template>
         <ng-template pTemplate="summary">
