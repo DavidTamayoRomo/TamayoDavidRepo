@@ -1,9 +1,7 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component,OnInit,ViewChild } from '@angular/core';
 import { Ticket } from 'src/domain/ticket';
 import { ConfirmationService, MessageService } from 'primeng/api';
-import { ProductService } from 'src/service/productservice';
 import { FormBuilder, Validators } from '@angular/forms';
-import { Apollo, gql } from 'apollo-angular';
 import { AppService } from './app.service';
 import { Paginar } from 'src/domain/pagination';
 import { Table } from 'primeng/table';
@@ -18,6 +16,8 @@ import { Table } from 'primeng/table';
 
 
 export class AppComponent implements OnInit {
+
+  rangeDates: Date[] | undefined;
 
   nodes!: any[];
 
@@ -42,7 +42,7 @@ export class AppComponent implements OnInit {
     limit: 5
   }
 
-  consulta: any;
+  consulta: any={};
 
   public total: number = 0;
   public desde: number = 0;
@@ -89,6 +89,8 @@ export class AppComponent implements OnInit {
     ];
   }
 
+
+
   informacion(event: any) {
     //console.log('TREE',event);
     let priority: any = [];
@@ -96,7 +98,7 @@ export class AppComponent implements OnInit {
     event.forEach((element: any) => {
       //controlar que tenga tres letras
       if (element.key.length == 3) {
-        //controlar la primera letrar del key
+        //controlar la primera letra del key
         if (element.key[0] == '0') {
           category.push(element.label)
         }
@@ -140,10 +142,6 @@ export class AppComponent implements OnInit {
     this.submitted = false;
     this.productDialog = true;
   }
-
-
-
-
 
   hideDialog() {
     this.productDialog = false;
@@ -248,6 +246,34 @@ export class AppComponent implements OnInit {
     this.obtenerTickets();
 
   }
+
+  datosCalendario(event:any){
+    console.log(event);
+    if (event[0] && event[1]) {
+      Object.assign(this.consulta,{"end": event[1],"start": event[0]});
+      this.appService.searchTickets(this.consulta).subscribe({
+        next: (res: any) => {
+          console.log(res);
+          this.products = res.data.searchTickets.data;
+          //poner en false bandera
+          this.bandera = false;
+        },
+        error: (err) => { }
+      })
+    }
+    
+    console.log(this.consulta);
+  }
+
+  clear(){
+    this.bandera = true;
+    this.rangeDates = undefined;
+    this.consulta={};
+    this.selectedNodes = [];
+    this.obtenerTickets();
+
+  }
+
 }
 
 interface PageEvent {
