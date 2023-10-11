@@ -2,16 +2,16 @@ import { Component, OnInit, ViewChild } from '@angular/core';
 import { Validators, FormBuilder } from '@angular/forms';
 import { ConfirmationService, MessageService } from 'primeng/api';
 import { Table } from 'primeng/table';
-import { AppService } from 'src/app/app.service';
 import { Paginar } from 'src/domain/pagination';
 import { Ticket } from 'src/domain/ticket';
 import { FileService } from 'src/service/fileservice';
+import { TicketService } from 'src/service/ticketservice';
 
 @Component({
   selector: 'app-ticket',
   templateUrl: './ticket.component.html',
   styleUrls: ['./ticket.component.css'],
-  providers: [MessageService, ConfirmationService, FileService]
+  providers: [MessageService, ConfirmationService, FileService, TicketService]
 })
 export class TicketComponent implements OnInit {
 
@@ -68,10 +68,10 @@ export class TicketComponent implements OnInit {
   constructor(
     private fb: FormBuilder,
     private messageService: MessageService,
-    private appService: AppService,
-    private fileService:FileService
+    private fileService:FileService,
+    private ticketService:TicketService
   ) {
-    this.appService.getSearch().then((item) => (this.nodes = item));
+    this.ticketService.getSearch().then((item) => (this.nodes = item));
   }
   ngOnInit() {
     this.obtenerTickets();
@@ -120,7 +120,7 @@ export class TicketComponent implements OnInit {
       this.obtenerTickets();
     } else {
       //realizar la consulta
-      this.appService.searchTickets(this.consulta).subscribe({
+      this.ticketService.searchTickets(this.consulta).subscribe({
         next: (res: any) => {
           console.log(res);
           this.products = res.data.searchTickets.data;
@@ -134,7 +134,7 @@ export class TicketComponent implements OnInit {
   }
   obtenerTickets() {
     console.log('PAGINADO ', this.paginar);
-    this.appService.getTickets(this.paginar).subscribe((resp: any) => {
+    this.ticketService.getTickets(this.paginar).subscribe((resp: any) => {
       console.log(resp);
       this.products = resp.data.tickets.data;
       this.total = resp.data.tickets.total;
@@ -183,7 +183,7 @@ export class TicketComponent implements OnInit {
 
       }
       console.log(ticket);
-      this.appService.createTicket(ticket).subscribe({
+      this.ticketService.createTicket(ticket).subscribe({
         next: (resp: any) => {
           this.messageService.add({ severity: 'success', summary: 'Correcto!', detail: 'Ticket agregado correctamente', life: 3000 });
           this.hideDialog();
@@ -270,7 +270,7 @@ export class TicketComponent implements OnInit {
     console.log(event);
     if (event[0] && event[1]) {
       Object.assign(this.consulta,{"end": event[1],"start": event[0]});
-      this.appService.searchTickets(this.consulta).subscribe({
+      this.ticketService.searchTickets(this.consulta).subscribe({
         next: (res: any) => {
           console.log(res);
           this.products = res.data.searchTickets.data;
