@@ -4,8 +4,8 @@ import { ConfirmationService, MessageService } from 'primeng/api';
 import { Table } from 'primeng/table';
 import { Paginar } from 'src/domain/pagination';
 import { Ticket } from 'src/domain/ticket';
-import { FileService } from 'src/service/fileservice';
-import { TicketService } from 'src/service/ticketservice';
+import { FileService } from 'src/service/file.service';
+import { TicketService } from 'src/service/ticket.service';
 
 @Component({
   selector: 'app-ticket',
@@ -76,18 +76,18 @@ export class TicketComponent implements OnInit {
   ngOnInit() {
     this.obtenerTickets();
     this.statuses = [
-      { label: 'VERIFIED', value: 'verify' },
-      { label: 'APPROVED', value: 'approved' },
-      { label: 'REJECTED', value: 'rejected' }
+      { label: 'VERIFICADO', value: 'verify' },
+      { label: 'APROBADO', value: 'approved' },
+      { label: 'RECHAZADO', value: 'rejected' }
     ];
     this.priority = [
-      { label: 'HIGH', value: 'high' },
-      { label: 'MEDIUM', value: 'medium' },
-      { label: 'LOW', value: 'low' }
+      { label: 'ALTO', value: 'high' },
+      { label: 'MEDIO', value: 'medium' },
+      { label: 'BAJO', value: 'low' }
     ];
     this.category = [
-      { label: 'INCIDENT', value: 'incident' },
-      { label: 'SUPPORT', value: 'support' },
+      { label: 'INCIDENTE', value: 'incident' },
+      { label: 'SUPORTE', value: 'support' },
       { label: 'ERROR', value: 'error' }
     ];
   }
@@ -127,11 +127,12 @@ export class TicketComponent implements OnInit {
           //poner en false bandera
           this.bandera = false;
         },
-        error: (err) => { }
+        error: (err:any) => { }
       })
     }
 
   }
+
   obtenerTickets() {
     console.log('PAGINADO ', this.paginar);
     this.ticketService.getTickets(this.paginar).subscribe((resp: any) => {
@@ -139,10 +140,6 @@ export class TicketComponent implements OnInit {
       this.products = resp.data.tickets.data;
       this.total = resp.data.tickets.total;
     })
-  }
-
-  loadFile(){
-
   }
 
   openNew() {
@@ -161,10 +158,6 @@ export class TicketComponent implements OnInit {
   hideDialog1() {
     this.productDialog1 = false;
     this.datosUpload = [];
-  }
-
-  saveProduct1(){
-
   }
 
   saveProduct() {
@@ -233,9 +226,7 @@ export class TicketComponent implements OnInit {
     }
   }
 
-  cambio() {
-    console.log(this.registerForm.get('prioridad'));
-  }
+
 
   campoNoValido(campo: any): boolean {
     if (this.registerForm.get(campo)?.invalid && (this.registerForm.get(campo)?.dirty || this.registerForm.get(campo)?.touched)) {
@@ -272,7 +263,6 @@ export class TicketComponent implements OnInit {
       Object.assign(this.consulta,{"end": event[1],"start": event[0]});
       this.ticketService.searchTickets(this.consulta).subscribe({
         next: (res: any) => {
-          console.log(res);
           this.products = res.data.searchTickets.data;
           //poner en false bandera
           this.bandera = false;
@@ -280,8 +270,6 @@ export class TicketComponent implements OnInit {
         error: (err:any) => { }
       })
     }
-    
-    console.log(this.consulta);
   }
 
   clear(){
@@ -298,9 +286,7 @@ export class TicketComponent implements OnInit {
     for(let file of event.files) {
         this.uploadedFiles=file;
     }
-    console.log(this.uploadedFiles);
     this.fileService.uploadFile(this.uploadedFiles).subscribe((resp:any)=>{
-      console.log(resp);
       this.datosUpload =resp;
     })
     this.messageService.add({severity: 'info', summary: 'File Uploaded', detail: ''});
