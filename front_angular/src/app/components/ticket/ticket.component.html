@@ -93,7 +93,7 @@
                 <label for="inventoryStatus">Prioridad</label>
                 <p-dropdown inputId="inventoryStatus" [options]="priority" formControlName="prioridad">
                     <ng-template pTemplate="selectedItem">
-                        <p-tag [value]="registerForm.get('prioridad')?.value!"
+                        <p-tag [value]="registerForm.get('prioridad')?.value! | priority"
                             [severity]="getPriority(registerForm.get('prioridad')?.value!)"></p-tag>
                     </ng-template>
                     <ng-template let-option pTemplate="item">
@@ -108,7 +108,7 @@
                 <label for="inventoryStatus">Categoría</label>
                 <p-dropdown inputId="inventoryStatus" [options]="category" formControlName="categoria">
                     <ng-template pTemplate="selectedItem">
-                        <p-tag [value]="registerForm.get('categoria')?.value!"
+                        <p-tag [value]="registerForm.get('categoria')?.value! | category"
                             [severity]="getCategory(registerForm.get('categoria')?.value!)"></p-tag>
                     </ng-template>
                     <ng-template let-option pTemplate="item">
@@ -123,7 +123,7 @@
                 <label for="inventoryStatus">Estado</label>
                 <p-dropdown inputId="inventoryStatus" [options]="statuses" formControlName="estado">
                     <ng-template pTemplate="selectedItem">
-                        <p-tag [value]="registerForm.get('estado')?.value!"
+                        <p-tag [value]="registerForm.get('estado')?.value! | status"
                             [severity]="getSeverity(registerForm.get('estado')?.value!)"></p-tag>
                     </ng-template>
                     <ng-template let-option pTemplate="item">
