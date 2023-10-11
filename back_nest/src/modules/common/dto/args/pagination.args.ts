@@ -8,10 +8,10 @@ export class PaginationArgs {
     @Field(()=> Int, {nullable:true})
     @IsOptional()
     @Min(0)
-    offset:number =0;
+    offset:number =+process.env.SKIP;
 
     @Field(()=> Int, {nullable:true})
     @IsOptional()
     @Min(1)
-    limit:number=10;
+    limit:number=+process.env.LIMIT;
 }

@@ -7,10 +7,13 @@
                 (click)="openNew()"></button>
             <!-- <button pButton pRipple label="Delete" icon="pi pi-trash" class="p-button-danger"
                 (click)="deleteSelectedProducts()" [disabled]="!selectedProducts || !selectedProducts.length"></button> -->
+            
+        </ng-template>
+        <ng-template pTemplate="right">
             <div class="card flex justify-content-center">
                 <p-treeSelect class="w-full md:w-20rem" containerStyleClass="w-full" [(ngModel)]="selectedNodes"
                     [options]="nodes" display="chip" [metaKeySelection]="false" selectionMode="checkbox"
-                    placeholder="Select Item" (ngModelChange)="informacion($event)"></p-treeSelect>
+                    placeholder="Filtrar" (ngModelChange)="informacion($event)"></p-treeSelect>
             </div>
         </ng-template>
     </p-toolbar>
@@ -120,7 +123,7 @@
         </ng-template>
 
     </p-table>
-    <p-paginator (onPageChange)="onPageChange($event)" [first]="first" [rows]="rows"
+    <p-paginator *ngIf="bandera" (onPageChange)="onPageChange($event)" [first]="first" [rows]="rows"
         [totalRecords]="total"></p-paginator>
 
 </div>

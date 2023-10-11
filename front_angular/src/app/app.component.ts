@@ -9,7 +9,6 @@ import { Paginar } from 'src/domain/pagination';
 import { Table } from 'primeng/table';
 
 
-
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
@@ -43,11 +42,15 @@ export class AppComponent implements OnInit {
     limit: 5
   }
 
+  consulta: any;
+
   public total: number = 0;
   public desde: number = 0;
 
   first: number = 0;
   rows: number = 5;
+
+  bandera: boolean = true;
 
   @ViewChild('dt') dataTable!: Table;
 
@@ -63,9 +66,9 @@ export class AppComponent implements OnInit {
   constructor(
     private fb: FormBuilder,
     private messageService: MessageService,
-    private appService: AppService
-  ) { 
-    this.appService.getFiles().then((files) => (this.nodes = files));
+    private appService: AppService,
+  ) {
+    this.appService.getSearch().then((item) => (this.nodes = item));
   }
   ngOnInit() {
     this.obtenerTickets();
@@ -86,8 +89,43 @@ export class AppComponent implements OnInit {
     ];
   }
 
-  informacion(event:any){
-    console.log('TREE',event);
+  informacion(event: any) {
+    //console.log('TREE',event);
+    let priority: any = [];
+    let category: any = [];
+    event.forEach((element: any) => {
+      //controlar que tenga tres letras
+      if (element.key.length == 3) {
+        //controlar la primera letrar del key
+        if (element.key[0] == '0') {
+          category.push(element.label)
+        }
+        if (element.key[0] == '1') {
+          priority.push(element.label)
+        }
+      }
+    });
+    this.consulta = {
+      "priority": priority,
+      "category": category
+    }
+    console.log(this.consulta);
+    if (this.consulta.priority.length == 0 && this.consulta.category.length == 0) {
+      this.bandera = true;
+      this.obtenerTickets();
+    } else {
+      //realizar la consulta
+      this.appService.searchTickets(this.consulta).subscribe({
+        next: (res: any) => {
+          console.log(res);
+          this.products = res.data.searchTickets.data;
+          //poner en false bandera
+          this.bandera = false;
+        },
+        error: (err) => { }
+      })
+    }
+
   }
   obtenerTickets() {
     console.log('PAGINADO ', this.paginar);
@@ -95,7 +133,6 @@ export class AppComponent implements OnInit {
       console.log(resp);
       this.products = resp.data.tickets.data;
       this.total = resp.data.tickets.total;
-
     })
   }
 
@@ -106,7 +143,7 @@ export class AppComponent implements OnInit {
 
 
 
-  
+
 
   hideDialog() {
     this.productDialog = false;
@@ -206,10 +243,10 @@ export class AppComponent implements OnInit {
     this.paginarResultado();
   }
 
-  paginarResultado(){
+  paginarResultado() {
     this.paginar.offset = this.first;
     this.obtenerTickets();
-    
+
   }
 }
 

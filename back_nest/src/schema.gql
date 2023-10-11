@@ -24,7 +24,7 @@ type TicketResponse {
 }
 
 type Query {
-  tickets(category: ValidCategory, offset: Int = 0, limit: Int = 10): TicketResponse!
+  tickets(category: ValidCategory, offset: Int = 0, limit: Int = 5): TicketResponse!
   ticket(id: ID!): Ticket!
 }
 
@@ -38,7 +38,7 @@ type Mutation {
   createTicket(createTicketInput: CreateTicketInput!): Ticket!
   updateTicket(updateTicketInput: UpdateTicketInput!): Ticket!
   removeTicket(id: ID!): Ticket!
-  searchTickets(offset: Int = 0, limit: Int = 10, start: DateTime, end: DateTime, priority: String, category: String): [Ticket!]!
+  searchTickets(offset: Int = 0, limit: Int = 5, start: DateTime, end: DateTime, priority: [String!], category: [String!]): TicketResponse!
 }
 
 input CreateTicketInput {

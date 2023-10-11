@@ -55,12 +55,14 @@ export class TicketsResolver {
     return this.ticketsService.remove(id);
   }
 
-  @Mutation(() => [Ticket])
+  @Mutation(() => TicketResponse)
   async searchTickets(
     @Args() paginationArgs: PaginationArgs,
     @Args() searchArgs: SearchArgs
-  ): Promise<Ticket[]> {
-    return this.ticketsService.searchTickets(paginationArgs, searchArgs);
+  ): Promise<TicketResponse> {
+    const total = await this.ticketsService.count();
+    const data = await this.ticketsService.searchTickets(paginationArgs, searchArgs);
+    return { data, total }
   }
 
 }

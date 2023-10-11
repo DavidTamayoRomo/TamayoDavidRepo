@@ -13,12 +13,12 @@ export class SearchArgs {
     @IsOptional()
     end?:Date;
 
-    @Field(()=>String, {nullable:true})
+    @Field(()=>[String], {nullable:true})
     @IsOptional()
-    priority?:String;
+    priority?:[String];
 
-    @Field(()=>String, {nullable:true})
+    @Field(()=>[String], {nullable:true})
     @IsOptional()
-    category?:String;
+    category?:[String];
     
 }

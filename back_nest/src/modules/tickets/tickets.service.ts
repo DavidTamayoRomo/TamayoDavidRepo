@@ -114,11 +114,19 @@ export class TicketsService {
     }
 
     if (priority) {
-      queryBuilder.andWhere('priority = :priority', { priority: priority });
+      let listaPriority = priority;
+      listaPriority.forEach((item: string, index: number) => {
+        queryBuilder.orWhere('priority = :priority' + index, { ['priority' + index]: item });
+      });
+      //queryBuilder.andWhere('priority = :priority', { priority: priority });
     }
 
     if (category) {
-      queryBuilder.andWhere('category = :category', { category: category });
+      let listaCategory = category;
+      listaCategory.forEach((item: string, index: number) => {
+        queryBuilder.orWhere('category = :category' + index, { ['category' + index]: item });
+      });
+      //queryBuilder.andWhere('category = :category', { category: category });
     }
 
     return queryBuilder.getMany();
