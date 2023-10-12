@@ -189,7 +189,7 @@ export class TicketComponent implements OnInit {
         }
       })
     } else {
-      this.messageService.add({ severity: 'success', summary: 'Successful', detail: 'Product Created', life: 3000 });
+      this.messageService.add({ severity: 'danger', summary: 'Campos inválidos', detail: 'Complete todos los campos, son obligatorios', life: 3000 });
     }
   }
 
