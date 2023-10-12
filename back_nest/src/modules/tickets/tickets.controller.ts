@@ -7,7 +7,7 @@ import { CreateTicketInput } from './dto/inputs/create-ticket.input';
 import { Ticket } from './entities/ticket.entity';
 import { SearchArgs } from '../common/dto/args/search.args';
 import { PaginationArgs } from '../common/dto/args/pagination.args';
-import { ApiResponse, ApiTags } from '@nestjs/swagger';
+import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 
 @ApiTags('Tickets')
 @Controller('tickets')
@@ -39,26 +39,30 @@ export class TicketsController implements OnModuleInit {
 
 
     @Post()
-    @ApiResponse({status:201, description: 'Create Ticket', type: Ticket})
-    @ApiResponse({status:400, description: 'Bad request'})
-    @ApiResponse({status:500, description: 'Internal server error'})
+    @ApiResponse({ status: 201, description: 'Create Ticket', type: Ticket })
+    @ApiResponse({ status: 400, description: 'Bad request' })
+    @ApiResponse({ status: 500, description: 'Internal server error' })
+    @ApiOperation({
+        summary: 'Create Ticket',
+        description: 'Recibe los datos necesarios para crear un nuevo ticket y devuelve el ticket creado si la operación es exitosa.'
+    })
     async create(@Body() createTicketInput: CreateTicketInput): Promise<Ticket> {
         return await this.ticketsService.create(createTicketInput);
     }
 
     @Get(':id')
-    @ApiResponse({status:200, description: 'Find Ticket', type: Ticket})
-    @ApiResponse({status:400, description: 'Bad request'})
-    @ApiResponse({status:500, description: 'Internal server error'})
-    async findOne(@Param('id') id: string): Promise<Ticket>{
+    @ApiResponse({ status: 200, description: 'Find Ticket', type: Ticket })
+    @ApiResponse({ status: 400, description: 'Bad request' })
+    @ApiResponse({ status: 500, description: 'Internal server error' })
+    async findOne(@Param('id') id: string): Promise<Ticket> {
         return await this.ticketsService.findOne(id);
     }
 
     @Get('search')
-    @ApiResponse({status:200, description: 'Search Tickets', type: [Ticket]})
-    @ApiResponse({status:400, description: 'Bad request'})
-    @ApiResponse({status:500, description: 'Internal server error'})
-    async searchTickets(@Body() search: Search): Promise<Ticket[]>{
+    @ApiResponse({ status: 200, description: 'Search Tickets', type: [Ticket] })
+    @ApiResponse({ status: 400, description: 'Bad request' })
+    @ApiResponse({ status: 500, description: 'Internal server error' })
+    async searchTickets(@Body() search: Search): Promise<Ticket[]> {
         return this.ticketsService.searchTickets(search.paginationArgs, search.searchArgs);
     }
 

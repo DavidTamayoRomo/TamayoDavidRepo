@@ -18,24 +18,15 @@ export class TicketComponent implements OnInit {
 
   datosUpload:any;
   uploadedFiles: any[] = [];
-
   rangeDates: Date[] | undefined;
-
   nodes!: any[];
-
   selectedNodes: any;
-
   productDialog: boolean = false;
   productDialog1: boolean = false;
-
-  products!: Ticket[];
-
+  tickets!: Ticket[];
   product!: Ticket;
-
   selectedProducts!: Ticket[] | null;
-
   submitted: boolean = false;
-
   statuses!: any[];
   priority!: any[];
   category!: any[];
@@ -124,7 +115,8 @@ export class TicketComponent implements OnInit {
       this.ticketService.searchTickets(this.consulta).subscribe({
         next: (res: any) => {
           console.log(res);
-          this.products = res.data.searchTickets.data;
+          this.tickets = res.data.searchTickets.data;
+          this.total = res.data.searchTickets.total;
           //poner en false bandera
           this.bandera = false;
         },
@@ -138,7 +130,7 @@ export class TicketComponent implements OnInit {
     console.log('PAGINADO ', this.paginar);
     this.ticketService.getTickets(this.paginar).subscribe((resp: any) => {
       console.log(resp);
-      this.products = resp.data.tickets.data;
+      this.tickets = resp.data.tickets.data;
       this.total = resp.data.tickets.total;
     })
   }
@@ -161,7 +153,7 @@ export class TicketComponent implements OnInit {
     this.datosUpload = [];
   }
 
-  saveProduct() {
+  saveTicket() {
     this.submitted = true;
     console.log(this.registerForm.value);
     if (this.registerForm.valid) {
@@ -179,6 +171,7 @@ export class TicketComponent implements OnInit {
       console.log(ticket);
       this.ticketService.createTicket(ticket).subscribe({
         next: (resp: any) => {
+          console.log("RESPUESTA",resp );
           this.messageService.add({ severity: 'success', summary: 'Correcto!', detail: 'Ticket agregado correctamente', life: 3000 });
           this.hideDialog();
           this.obtenerTickets();
@@ -265,7 +258,9 @@ export class TicketComponent implements OnInit {
       Object.assign(this.consulta,{"end": event[1],"start": event[0]});
       this.ticketService.searchTickets(this.consulta).subscribe({
         next: (res: any) => {
-          this.products = res.data.searchTickets.data;
+          console.log(res);
+          this.tickets = res.data.searchTickets.data;
+          this.total = res.data.searchTickets.total;
           //poner en false bandera
           this.bandera = false;
         },
