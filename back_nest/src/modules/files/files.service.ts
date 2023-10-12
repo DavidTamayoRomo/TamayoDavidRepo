@@ -67,13 +67,13 @@ export class FilesService {
           
             for (const row of batch) {
               if (idSet.has(row.id)) {
-                errors.push({ row, error: {details:[{message:'Duplicate record'}]} });
+                errors.push({ row, error: {details:[{message:'Duplicate record',id:row.id}]} });
                 continue;
               }
               idSet.add(row.id);
               const validation = schema.validate(row);
               if (validation.error) {
-                errors.push({ error: validation.error });
+                errors.push({ error: validation.error, id:row.id });
               } else {
                 validRecords.push(row);
               }
